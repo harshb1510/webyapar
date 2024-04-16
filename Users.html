@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Users</title>
+</head>
+<body>
+
+<div class="flex justify-around">
+  <div class="flex-6">
+    <div class="bg-blue-700 h-">
+      <h1>LOGO</h1>
+    </div>
+  </div>
+  <div class="flex-6">
+    <div id="allUsersList"></div>
+  </div>
+</div>
+
+<script>
+  fetch('http://localhost:8080/api/getUsers')
+    .then(response => response.json())
+    .then(users => {
+      const allUsersListContainer = document.getElementById('allUsersList');
+      allUsersListContainer.innerHTML = '<h2>All Users List:</h2>';
+      
+      if (users.length > 0) {
+        // Create a table
+        const table = document.createElement('table');
+        table.border = '1';
+
+        // Create table header
+        const headerRow = table.insertRow(0);
+        const userIdHeader = headerRow.insertCell(0);
+        userIdHeader.textContent = 'User ID';
+        const nameHeader = headerRow.insertCell(1);
+        nameHeader.textContent = 'Name';
+        const photoHeader = headerRow.insertCell(2);
+        photoHeader.textContent = 'Photo';
+        const actionHeader = headerRow.insertCell(3);
+        actionHeader.textContent = 'Action';
+
+        // Create table rows
+        users.forEach(user => {
+            console.log(user)
+          const row = table.insertRow();
+          const userIdCell = row.insertCell(0);
+          userIdCell.textContent = user.userId;
+          const nameCell = row.insertCell(1);
+          nameCell.textContent = user.firstName;
+
+          // Assuming 'photo' is the URL to the photo
+          const photoCell = row.insertCell(2);
+          const photoImage = document.createElement('img');
+          photoImage.src = user.photo;
+          photoImage.alt = 'User Photo';
+          photoCell.appendChild(photoImage);
+
+          // Action column - Add your desired action button/link here
+          const actionCell = row.insertCell(3);
+          const viewButton = document.createElement('button');
+          viewButton.textContent = 'View';
+          viewButton.addEventListener('click', () => {
+            // Implement your action here, e.g., view user details
+            alert(`View details for user ${user.userId}`);
+          });
+          actionCell.appendChild(viewButton);
+        });
+
+        allUsersListContainer.appendChild(table);
+      } else {
+        allUsersListContainer.innerHTML += '<p>No users found.</p>';
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching all users:', error);
+    });
+</script>
+
+</body>
+</html>
